@@ -1,0 +1,40 @@
+{
+  "name": "google-profanity-words",
+  "version": "1.0.0",
+  "description": "Full list of bad words and top swear words banned by Google.",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RobertJGabriel/Google-profanity-words.git"
+  },
+  "keywords": [
+    "google",
+    "side-project",
+    "profanity",
+    "profanity-detection",
+    "profanityfilter"
+  ],
+  "author": "Robert James Gabriel",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/RobertJGabriel/Google-profanity-words/issues"
+  },
+  "homepage": "https://github.com/RobertJGabriel/Google-profanity-words#readme",
+  "devDependencies": {
+    "@babel/cli": "^7.16.0",
+    "@babel/core": "^7.16.5",
+    "@babel/plugin-proposal-optional-chaining": "^7.11.0",
+    "@babel/preset-env": "^7.16.5",
+    "babel-eslint": "^10.1.0",
+    "jest": "^27.4.5"
+  },
+  "resolutions": {
+    "babel-jest": "^21.2.0",
+    "babel-plugin-jest-hoist": "^21.2.0",
+    "babel-preset-jest": "^21.2.0"
+  }
+}
