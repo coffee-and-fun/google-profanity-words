@@ -1,5 +1,5 @@
 {
-  "name": "google-profanity-words",
+  "name": "@coffee-and-fun/google-profanity-words",
   "version": "1.0.0",
   "description": "Full list of bad words and top swear words banned by Google.",
   "main": "index.js",
@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/RobertJGabriel/Google-profanity-words.git"
+    "url": "git+https://github.com/coffee-and-fun/Google-profanity-words.git"
   },
   "keywords": [
     "google",
@@ -21,9 +21,9 @@
   "author": "Robert James Gabriel",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/RobertJGabriel/Google-profanity-words/issues"
+    "url": "https://github.com/coffee-and-fun/Google-profanity-words/issues"
   },
-  "homepage": "https://github.com/RobertJGabriel/Google-profanity-words#readme",
+  "homepage": "https://github.com/coffee-and-fun/Google-profanity-words#readme",
   "devDependencies": {
     "@babel/cli": "^7.16.0",
     "@babel/core": "^7.16.5",
