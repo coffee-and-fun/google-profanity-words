@@ -2,10 +2,15 @@ import fs from 'fs';
 
 
 export class profanityEngine {
-    constructor() {
+    constructor(config) {
+        let path;
+        if (config && config.test) {
+            path = 'data/list.txt'
+        } else {
+            path = './node_modules/@coffeeandfun/google-profanity-words/data/list.txt';
+        }
 
-        this.terms = fs.readFileSync('data/list.txt', 'utf8').split('\n');
-
+        this.terms = fs.readFileSync(`${path}`, 'utf8').split('\n');
     }
 
     async all() {

@@ -1,6 +1,8 @@
 import { profanityEngine } from '../index.js';
 
-let profanity = new profanityEngine();
+let profanity = new profanityEngine({
+  test: true
+});
 
 describe('Profanity tests', () => {
 
