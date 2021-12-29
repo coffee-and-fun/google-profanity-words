@@ -6,18 +6,18 @@ let profanity = new profanityEngine({
 
 describe('Profanity tests', () => {
 
-    it('Get all words in an array', async () => {
-        const allWords = await profanity.all();
+    it('Get all words in an array', () => {
+        const allWords = profanity.all();
         expect(allWords.length).toEqual(452);
     });
 
-    it('Search for the word Shit in list', async () => {
-        const searchWord = await profanity.search('shit');
+    it('Search for the word Shit in list', () => {
+        const searchWord = profanity.search('shit');
         expect(searchWord).toEqual(true);
     });
 
-    it('Search for the word ka in list', async () => {
-        const searchWord = await profanity.search('ka');
+    it('Search for the word ka in list', () => {
+        const searchWord = profanity.search('ka');
         expect(searchWord).toEqual(false);
     });
 });
