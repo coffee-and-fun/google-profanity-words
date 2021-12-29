@@ -8,7 +8,7 @@ describe('Profanity tests', () => {
 
     it('Get all words in an array', () => {
         const allWords = profanity.all();
-        expect(allWords.length).toEqual(452);
+        expect(allWords.length).toEqual(451);
     });
 
     it('Search for the word Shit in list', () => {
