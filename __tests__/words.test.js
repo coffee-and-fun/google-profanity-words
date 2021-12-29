@@ -20,4 +20,9 @@ describe('Profanity tests', () => {
         const searchWord = profanity.search('ka');
         expect(searchWord).toEqual(false);
     });
+
+    it('Should return false for any empty string', () => {
+        const searchWord = profanity.search('');
+        expect(searchWord).toEqual(false);
+    });
 });
