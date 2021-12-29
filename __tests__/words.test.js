@@ -6,7 +6,7 @@ describe('Profanity tests', () => {
 
     it('Get all words in an array', async () => {
         const allWords = await profanity.all();
-        expect(allWords.length).toEqual(453);
+        expect(allWords.length).toEqual(452);
     });
 
     it('Search for the word Shit in list', async () => {
