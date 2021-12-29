@@ -6,17 +6,17 @@ let profanity = new profanityEngine({
 
 describe('Profanity tests', () => {
 
-    it('Get all words in an array', () => {
+    it('Should get all the profanity words in an array', () => {
         const allWords = profanity.all();
         expect(allWords.length).toEqual(451);
     });
 
-    it('Search for the word Shit in list', () => {
+    it('Should return true for profanity words', () => {
         const searchWord = profanity.search('shit');
         expect(searchWord).toEqual(true);
     });
 
-    it('Search for the word ka in list', () => {
+    it('Should return false for normal words', () => {
         const searchWord = profanity.search('ka');
         expect(searchWord).toEqual(false);
     });
