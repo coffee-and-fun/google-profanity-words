@@ -1,7 +1,7 @@
 import fs from 'fs';
 
 
-export class profanityEngine {
+export class ProfanityEngine {
     constructor(config) {
         let path;
         if (config && config.test) {

@@ -1,6 +1,6 @@
-import { profanityEngine } from '../index.js';
+import { ProfanityEngine } from '../index.js';
 
-let profanity = new profanityEngine({
+let profanity = new ProfanityEngine({
   test: true
 });
 
