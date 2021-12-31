@@ -14,13 +14,13 @@ npm install -s @coffeeandfun/google-profanity-words
 
 ## Usage
 ```js
-import { profanityEngine } from '@coffeeandfun/google-profanity-words';
+import { ProfanityEngine } from '@coffeeandfun/google-profanity-words';
 
-let profanity = new profanityEngine();
+let profanity = new ProfanityEngine();
 
-await profanity.all(); // returns all bad words as an array.
+profanity.all(); // returns all bad words as an array.
 
-await profanity.search('bad word'); // returns true if the word is found in the list.
+profanity.search('bad word'); // returns true if the word is found in the list.
 
 ```
 
