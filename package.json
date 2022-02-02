@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/coffeeandfun/Google-profanity-words.git"
+    "url": "git+https://github.com/coffee-and-fun/google-profanity-words.git"
   },
   "keywords": [
     "google",
@@ -21,9 +21,9 @@
   "author": "Robert James Gabriel",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/coffeeandfun/Google-profanity-words/issues"
+    "url": "https://github.com/coffee-and-fun/google-profanity-words/issues"
   },
-  "homepage": "https://github.com/ccoffeeandfun/Google-profanity-words#readme",
+  "homepage": "https://github.com/coffee-and-fun/google-profanity-words#readme",
   "devDependencies": {
     "jest": "^27.4.5"
   },
