@@ -8,7 +8,7 @@ describe('Profanity tests', () => {
 
     it('Should get all the profanity words in an array', () => {
         const allWords = profanity.all();
-        expect(allWords.length).toEqual(451);
+        expect(allWords.length).toEqual(958);
     });
 
     it('Should return true for profanity words', () => {
@@ -25,4 +25,15 @@ describe('Profanity tests', () => {
         const searchWord = profanity.search('');
         expect(searchWord).toEqual(false);
     });
+
+    it('Should return false for SFW string', () => {
+      const searchWord = profanity.searchWithin('hello world');
+      expect(searchWord).toEqual(false);
+    });
+
+    it('Should retrun true for NSFW string in sentence', () => {
+      const searchWord = profanity.searchWithin('hello world, fucker');
+      expect(searchWord).toEqual(true);
+    });
+
 });
