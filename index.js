@@ -1,24 +1,30 @@
-import fs from 'fs';
-
+import { readFile } from "fs";
 
 export class ProfanityEngine {
-    constructor(config) {
-        let path;
-        if (config && config.test) {
-            path = 'data/list.txt'
-        } else {
-            path = './node_modules/@coffeeandfun/google-profanity-words/data/list.txt';
-        }
-
-        this.terms = fs.readFileSync(`${path}`, 'utf8').split('\n');
+  constructor(config) {
+    let path;
+    if (config && config.test) {
+      path = "data/list.txt";
+    } else {
+      path =
+        "./node_modules/@coffeeandfun/google-profanity-words/data/list.txt";
     }
 
-    all() {
-        return this.terms
-    }
+    readFile(`${path}`, (err, data) => {
+      if (err) {
+        console.log(err);
+      } else {
+        this.terms = data.toString().split("\n");
+      }
+    });
+  }
 
-    search(term) {
-        let result = this.terms.indexOf(term);
-        return result > -1 ? true : false
-    }
+  all() {
+    return this.terms;
+  }
+
+  search(term) {
+    let result = this.terms.indexOf(term);
+    return result > -1 ? true : false;
+  }
 }
