@@ -18,7 +18,6 @@ export class ProfanityEngine {
     }
 
     search(term) {
-        let result = this.terms.indexOf(term);
-        return result > -1 ? true : false
+        return this.terms.includes(term)
     }
 }
