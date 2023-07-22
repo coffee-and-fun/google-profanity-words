@@ -23,10 +23,14 @@ To use the `@coffeeandfun/google-profanity-words`, first, import the module and 
 ```javascript
 import { ProfanityEngine } from '@coffeeandfun/google-profanity-words';
 
-let profanity = new ProfanityEngine();
+// Pass the 'language' parameter to specify the language (optional).
+// Defaults to 'en' if no valid language code is provided.
+const profanity = new ProfanityEngine({ language: 'es' });
+
 ```
 
-The `test` parameter is optional and used for testing purposes, but it is not required for normal usage.
+The language parameter is optional and can be used to specify the language for the profanity list. It defaults to 'en' if no valid language code is provided. If the specified language file is not found, it will fall back to the 'en' language file and display a console warning.
+
 
 ## API Functions
 
