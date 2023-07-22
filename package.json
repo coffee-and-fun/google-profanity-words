@@ -1,11 +1,14 @@
 {
   "name": "@coffeeandfun/google-profanity-words",
-  "version": "1.0.4",
+  "version": "2.0.0",
   "description": "Full list of bad words and top swear words banned by Google.",
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "NODE_OPTIONS=--experimental-vm-modules jest"
+    "test": "NODE_OPTIONS=--experimental-vm-modules NODE_NO_WARNINGS=1 jest",
+    "en": "NODE_OPTIONS=--experimental-vm-modules NODE_NO_WARNINGS=1 jest english.test.js",
+    "es": "NODE_OPTIONS=--experimental-vm-modules NODE_NO_WARNINGS=1 jest spanish.test.js",
+    "engine": "NODE_OPTIONS=--experimental-vm-modules NODE_NO_WARNINGS=1 jest engine.test.js"
   },
   "repository": {
     "type": "git",
