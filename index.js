@@ -1,33 +1,80 @@
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import { readFile } from "fs/promises";
+import path from "path";
+import { fileURLToPath } from "url";
 
 export class ProfanityEngine {
-    constructor(config) {
-        const language = config && config.language ? config.language : 'en';
-        this.filePath = this.getLanguageFilePath(language);
+  constructor(config) {
+    this.isTestMode = config && config.testMode ? config.testMode : false;
+    this.language = config && config.language ? config.language : "en";
+    this.terms = [];
+    this.filePath = "";
+  }
 
-        this.terms = fs.readFileSync(this.filePath, 'utf8').split('\n');
+  async initialize() {
+    this.filePath = await this.getLanguageFilePath(this.language);
+    try {
+      const fileContent = await this.readFileAndSplit(this.filePath);
+      this.terms = fileContent;
+    } catch (err) {
+      if (this.isTestMode === false) {
+        let message = `Error reading file: ${err.message}`;
+        console.warn("Profanity words issue:", message);
+      }
+      this.terms = [];
+    }
+  }
+
+  async getLanguageFilePath(language) {
+    const currentFilePath = fileURLToPath(import.meta.url);
+    const dataFolderPath = path.join(path.dirname(currentFilePath), "data");
+    const languageFilePath = path.join(dataFolderPath, `${language}.txt`);
+    const fileExists = await this.fileExists(languageFilePath);
+
+    if (!fileExists) {
+      if (this.isTestMode === false) {
+        let message = `Warning: The ${language} language file could not be found. Defaulting to 'en' language.`;
+        console.warn("Profanity words issue:", message);
+      }
+      return path.join(dataFolderPath, "en.txt");
     }
 
-    getLanguageFilePath(language) {
-        const dataFolderPath = path.join(path.dirname(fileURLToPath(import.meta.url)), 'data');
-        const languageFilePath = path.join(dataFolderPath, `${language}.txt`);
+    return languageFilePath;
+  }
 
-        if (!fs.existsSync(languageFilePath)) {
-            console.warn(`Warning: The ${language} language file could not be found. Defaulting to 'en' language.`);
-            return path.join(dataFolderPath, 'en.txt');
-        }
+  async fileExists(filePath) {
+    try {
+      await readFile(filePath);
+      return true;
+    } catch (err) {
+      return false;
+    }
+  }
 
-        return languageFilePath;
+  async readFileAndSplit(filePath) {
+    try {
+      const fileContent = await readFile(filePath, "utf8");
+      return fileContent.split("\n");
+    } catch (err) {
+      if (this.isTestMode === false) {
+        console.warn("Profanity words issue:", err);
+      }
+      return [];
+    }
+  }
+
+  async all() {
+    if (this.terms.length === 0) {
+      await this.initialize();
     }
 
-    all() {
-        return this.terms;
+    return this.terms;
+  }
+
+  async search(term) {
+    if (this.terms.length === 0) {
+      await this.initialize();
     }
 
-    search(term) {
-        const result = this.terms.indexOf(term);
-        return result > -1;
-    }
+    return this.terms.includes(term);
+  }
 }
