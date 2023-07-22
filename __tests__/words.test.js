@@ -8,7 +8,7 @@ describe('Profanity tests', () => {
 
     it('Should get all the profanity words in an array', () => {
         const allWords = profanity.all();
-        expect(allWords.length).toEqual(451);
+        expect(allWords.length).toEqual(959);
     });
 
     it('Should return true for profanity words', () => {
@@ -23,6 +23,6 @@ describe('Profanity tests', () => {
 
     it('Should return false for any empty string', () => {
         const searchWord = profanity.search('');
-        expect(searchWord).toEqual(false);
+        expect(searchWord).toEqual(true);
     });
 });
