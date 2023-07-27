@@ -1,6 +1,4 @@
-![alt text](.github/readme.png "Logo Title Text 1")
-
-
+![alt text](.github/readme.png 'Logo Title Text 1')
 
 ## Description
 
@@ -26,11 +24,9 @@ import { ProfanityEngine } from '@coffeeandfun/google-profanity-words';
 // Pass the 'language' parameter to specify the language (optional).
 // Defaults to 'en' if no valid language code is provided.
 const profanity = new ProfanityEngine({ language: 'es' });
-
 ```
 
 The language parameter is optional and can be used to specify the language for the profanity list. It defaults to 'en' if no valid language code is provided. If the specified language file is not found, it will fall back to the 'en' language file and display a console warning.
-
 
 ## API Functions
 
@@ -51,12 +47,23 @@ const searchWord = profanity.search('shit');
 // Returns true if the word is profane, otherwise false.
 ```
 
-### 3. Handling Empty Strings
+### 3. hasCurseWords(sentence)
 
-The `search` function will return `false` for any empty string.
+Checks if a given sentence contains any profanity words.
+
+```javascript
+const sentence = 'Do not use bad words like mierda or idiota.';
+const hasCurseWords = profanity.hasCurseWords(sentence);
+// Returns true if the sentence contains profanity words, otherwise false.
+```
+
+### 4. Handling Empty Strings
+
+The `search` and `hasCurseWords` functions will return false for any empty string.
 
 ```javascript
 const searchWord = profanity.search('');
+const hasCurseWords = profanity.hasCurseWords('');
 // Returns false for an empty string.
 ```
 

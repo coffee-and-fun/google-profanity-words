@@ -3,22 +3,21 @@ import { ProfanityEngine } from '../index.js';
 const language = process.env.LANGUAGE || 'en'; // Default to 'en' if the LANGUAGE environment variable is not set
 let profanity;
 
-
 describe('ProfanityEngine Functions tests', () => {
   beforeAll(async () => {
-     profanity = new ProfanityEngine({
-       language: 'en',
-       testMode:true
-     });
-     await profanity.initialize(); // Initialize the profanity instance with the English language
-   });
+    profanity = new ProfanityEngine({
+      language: 'en',
+      testMode: true,
+    });
+    await profanity.initialize(); // Initialize the profanity instance with the English language
+  });
 
   it('Should get the correct language file path', async () => {
     const filePath = await profanity.getLanguageFilePath('es');
     expect(filePath).toContain('es.txt');
   });
 
-  it('Should return the default language file path for unknown language',async () => {
+  it('Should return the default language file path for unknown language', async () => {
     const filePath = await profanity.getLanguageFilePath('fr');
     expect(filePath).toContain('en.txt');
   });
