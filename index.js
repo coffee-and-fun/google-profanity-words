@@ -62,6 +62,24 @@ export class ProfanityEngine {
     }
   }
 
+  async hasCurseWords(sentence) {
+      if (this.terms.length === 0) {
+        await this.initialize();
+      }
+
+      const wordsInSentence = sentence.split(/\s+/);
+      const lowerCasedTerms = this.terms.map((term) => term.toLowerCase());
+
+      for (const word of wordsInSentence) {
+        const lowerCasedWord = word.toLowerCase();
+        if (lowerCasedTerms.includes(lowerCasedWord)) {
+          return true;
+        }
+      }
+
+      return false;
+    }
+
   async all() {
     if (this.terms.length === 0) {
       await this.initialize();

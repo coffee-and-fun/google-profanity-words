@@ -31,4 +31,16 @@ describe('English Profanity tests', () => {
     const searchWord = await profanity.search('');
     expect(searchWord).toEqual(true);
   });
+  
+  it('Should return true for a sentence containing a profanity word', async () => {
+  const sentence = 'Do not use bad words like shit or asshole.';
+  const hasCurseWords = await profanity.hasCurseWords(sentence);
+  expect(hasCurseWords).toEqual(true);
+});
+
+it('Should return false for a sentence with no profanity word', async () => {
+  const sentence = 'This is a clean and polite sentence.';
+  const hasCurseWords = await profanity.hasCurseWords(sentence);
+  expect(hasCurseWords).toEqual(false);
+});
 });

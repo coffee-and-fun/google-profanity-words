@@ -51,12 +51,25 @@ const searchWord = profanity.search('shit');
 // Returns true if the word is profane, otherwise false.
 ```
 
-### 3. Handling Empty Strings
+### 3. hasCurseWords(sentence)
+Checks if a given sentence contains any profanity words.
 
-The `search` function will return `false` for any empty string.
+```javascript
+
+const sentence = 'Do not use bad words like mierda or idiota.';
+const hasCurseWords = profanity.hasCurseWords(sentence);
+// Returns true if the sentence contains profanity words, otherwise false.
+
+```
+
+### 4. Handling Empty Strings
+
+The `search` and `hasCurseWords` functions will return false for any empty string.
+
 
 ```javascript
 const searchWord = profanity.search('');
+const hasCurseWords = profanity.hasCurseWords('');
 // Returns false for an empty string.
 ```
 

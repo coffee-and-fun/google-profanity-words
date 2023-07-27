@@ -30,4 +30,16 @@ describe('Spanish Profanity tests', () => {
     const searchWord = await profanity.search('');
     expect(searchWord).toEqual(true);
   });
+
+  it('Should return true for a sentence containing a profanity word', async () => {
+  const sentence = 'No deberías decir malas culo palabras como mierda.';
+  const hasCurseWords = await profanity.hasCurseWords(sentence);
+  expect(hasCurseWords).toEqual(true);
+});
+
+it('Should return false for a sentence with no profanity word', async () => {
+  const sentence = 'Esta es una oración limpia y educada.';
+  const hasCurseWords = await profanity.hasCurseWords(sentence);
+  expect(hasCurseWords).toEqual(false);
+});
 });
