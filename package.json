@@ -28,7 +28,7 @@
   },
   "homepage": "https://github.com/coffee-and-fun/google-profanity-words#readme",
   "devDependencies": {
-    "jest": "^27.4.5"
-  },
-  "dependencies": {}
+    "jest": "^27.4.5",
+    "prettier": "3.0.0"
+  }
 }
