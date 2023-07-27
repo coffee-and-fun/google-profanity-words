@@ -1,4 +1,4 @@
-![alt text](.github/readme.png "Logo Title Text 1")
+![alt text](.github/readme.png 'Logo Title Text 1')
 
 ## Description
 
@@ -19,11 +19,11 @@ npm install @coffeeandfun/google-profanity-words
 To use the `@coffeeandfun/google-profanity-words`, first, import the module and create an instance:
 
 ```javascript
-import { ProfanityEngine } from "@coffeeandfun/google-profanity-words";
+import { ProfanityEngine } from '@coffeeandfun/google-profanity-words';
 
 // Pass the 'language' parameter to specify the language (optional).
 // Defaults to 'en' if no valid language code is provided.
-const profanity = new ProfanityEngine({ language: "es" });
+const profanity = new ProfanityEngine({ language: 'es' });
 ```
 
 The language parameter is optional and can be used to specify the language for the profanity list. It defaults to 'en' if no valid language code is provided. If the specified language file is not found, it will fall back to the 'en' language file and display a console warning.
@@ -43,7 +43,7 @@ const allWords = profanity.all();
 Checks if a given word is considered profane.
 
 ```javascript
-const searchWord = profanity.search("shit");
+const searchWord = profanity.search('shit');
 // Returns true if the word is profane, otherwise false.
 ```
 
@@ -52,7 +52,7 @@ const searchWord = profanity.search("shit");
 Checks if a given sentence contains any profanity words.
 
 ```javascript
-const sentence = "Do not use bad words like mierda or idiota.";
+const sentence = 'Do not use bad words like mierda or idiota.';
 const hasCurseWords = profanity.hasCurseWords(sentence);
 // Returns true if the sentence contains profanity words, otherwise false.
 ```
@@ -62,8 +62,8 @@ const hasCurseWords = profanity.hasCurseWords(sentence);
 The `search` and `hasCurseWords` functions will return false for any empty string.
 
 ```javascript
-const searchWord = profanity.search("");
-const hasCurseWords = profanity.hasCurseWords("");
+const searchWord = profanity.search('');
+const hasCurseWords = profanity.hasCurseWords('');
 // Returns false for an empty string.
 ```
 

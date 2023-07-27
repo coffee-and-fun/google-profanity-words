@@ -1,45 +1,45 @@
-import { ProfanityEngine } from "../index.js";
+import { ProfanityEngine } from '../index.js';
 
-const language = process.env.LANGUAGE || "en"; // Default to 'en' if the LANGUAGE environment variable is not set
+const language = process.env.LANGUAGE || 'en'; // Default to 'en' if the LANGUAGE environment variable is not set
 let profanity;
 
-describe("English Profanity tests", () => {
+describe('English Profanity tests', () => {
   beforeAll(async () => {
     profanity = new ProfanityEngine({
-      language: "en",
+      language: 'en',
       testMode: true,
     });
     await profanity.initialize(); // Initialize the profanity instance with the English language
   });
 
-  it("Should get all the profanity words in an array", async () => {
+  it('Should get all the profanity words in an array', async () => {
     const allWords = await profanity.all();
     expect(allWords.length).toEqual(959);
   });
 
-  it("Should return true for profanity words", async () => {
-    const searchWord = await profanity.search("shit");
+  it('Should return true for profanity words', async () => {
+    const searchWord = await profanity.search('shit');
     expect(searchWord).toEqual(true);
   });
 
-  it("Should return false for normal words", async () => {
-    const searchWord = await profanity.search("ka");
+  it('Should return false for normal words', async () => {
+    const searchWord = await profanity.search('ka');
     expect(searchWord).toEqual(false);
   });
 
-  it("Should return false for any empty string", async () => {
-    const searchWord = await profanity.search("");
+  it('Should return false for any empty string', async () => {
+    const searchWord = await profanity.search('');
     expect(searchWord).toEqual(true);
   });
 
-  it("Should return true for a sentence containing a profanity word", async () => {
-    const sentence = "Do not use bad words like shit or asshole.";
+  it('Should return true for a sentence containing a profanity word', async () => {
+    const sentence = 'Do not use bad words like shit or asshole.';
     const hasCurseWords = await profanity.hasCurseWords(sentence);
     expect(hasCurseWords).toEqual(true);
   });
 
-  it("Should return false for a sentence with no profanity word", async () => {
-    const sentence = "This is a clean and polite sentence.";
+  it('Should return false for a sentence with no profanity word', async () => {
+    const sentence = 'This is a clean and polite sentence.';
     const hasCurseWords = await profanity.hasCurseWords(sentence);
     expect(hasCurseWords).toEqual(false);
   });
