@@ -1,6 +1,6 @@
 {
   "name": "@coffeeandfun/google-profanity-words",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Full list of bad words and top swear words banned by Google.",
   "main": "index.js",
   "type": "module",
