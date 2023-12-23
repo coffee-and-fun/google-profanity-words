@@ -35,7 +35,7 @@ The language parameter is optional and can be used to specify the language for t
 Retrieves all the profanity words as an array.
 
 ```javascript
-const allWords = profanity.all();
+const allWords = await profanity.all();
 ```
 
 ### 2. `search(word)`
@@ -43,7 +43,7 @@ const allWords = profanity.all();
 Checks if a given word is considered profane.
 
 ```javascript
-const searchWord = profanity.search('shit');
+const searchWord = await profanity.search('shit');
 // Returns true if the word is profane, otherwise false.
 ```
 
@@ -53,7 +53,7 @@ Checks if a given sentence contains any profanity words.
 
 ```javascript
 const sentence = 'Do not use bad words like mierda or idiota.';
-const hasCurseWords = profanity.hasCurseWords(sentence);
+const hasCurseWords = await profanity.hasCurseWords(sentence);
 // Returns true if the sentence contains profanity words, otherwise false.
 ```
 
@@ -62,8 +62,8 @@ const hasCurseWords = profanity.hasCurseWords(sentence);
 The `search` and `hasCurseWords` functions will return false for any empty string.
 
 ```javascript
-const searchWord = profanity.search('');
-const hasCurseWords = profanity.hasCurseWords('');
+const searchWord = await profanity.search('');
+const hasCurseWords = await profanity.hasCurseWords('');
 // Returns false for an empty string.
 ```
 
