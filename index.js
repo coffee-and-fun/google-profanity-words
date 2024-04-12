@@ -80,6 +80,26 @@ export class ProfanityEngine {
     return false;
   }
 
+  async getCurseWords(sentence) {
+    if (this.terms.length === 0) {
+      await this.initialize();
+    }
+
+    let foundCurseWords = [];
+
+    const wordsInSentence = sentence.split(/\s+/);
+    const lowerCasedTerms = this.terms.map((term) => term.toLowerCase());
+
+    for (const word of wordsInSentence) {
+      const lowerCasedWord = word.toLowerCase();
+      if (lowerCasedTerms.includes(lowerCasedWord)) {
+        foundCurseWords.push(word);
+      }
+    }
+
+    return foundCurseWords;
+  }
+
   async all() {
     if (this.terms.length === 0) {
       await this.initialize();

@@ -46,4 +46,16 @@ describe('ProfanityEngine Functions tests', () => {
     let terms = await profanity.all();
     expect(terms.length).toEqual(959);
   });
+
+  it('Should return list of found profanity words', async () => {
+    const sentence = 'This is a test sentence with bad words like hell and damn';
+    const badWords = await profanity.getCurseWords(sentence);
+    expect(badWords).toEqual(['hell', 'damn']);
+  });
+
+  it('Should return empty array if no curse words found', async () => {
+    const sentence = 'This is a test sentence with no bad words';
+    const result = await profanity.getCurseWords(sentence);
+    expect(result).toEqual([]);
+  });
 });
