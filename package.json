@@ -1,7 +1,7 @@
 {
   "name": "@coffeeandfun/google-profanity-words",
-  "version": "2.1.0",
-  "description": "Full list of bad words and top swear words banned by Google.",
+  "version": "3.0.0",
+  "description": "Real profanity words banned by Google, extracted from their hidden API before shutdown. Now available as an easy-to-use Node.js library for content filtering.",
   "main": "index.js",
   "type": "module",
   "scripts": {

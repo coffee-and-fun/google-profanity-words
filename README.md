@@ -1,90 +1,223 @@
 ![alt text](.github/readme.png 'Logo Title Text 1')
 
-## Description
 
-Full list of bad words and top swear words banned by Google. The list is updated monthly. Pull requests are welcome!
 
-The `@coffeeandfun/google-profanity-words` is a Node.js module created by Robert James Gabriel from Coffee & Fun LLC. It is designed to help you identify and manage profanity words in a given text. The module provides functions to retrieve a list of all known profanity words, check if a specific word is considered profane, and handle empty strings appropriately.
+# ☕ Google Profanity Words
 
-## Installation
+> A fun and developer-friendly profanity detection library brought to you by [Coffee & Fun LLC](https://coffeeandfun.com) ☕🎉  
+> Built and maintained with love by [Robert James Gabriel](https://github.com/robertgabriel) 💻✨
 
-You can install the `@coffeeandfun/google-profanity-words` module using npm:
+[![npm version](https://img.shields.io/npm/v/@coffeeandfun/google-profanity-words.svg)](https://www.npmjs.com/package/@coffeeandfun/google-profanity-words)  [![Stars](https://img.shields.io/github/stars/@coffeeandfun/google-profanity-words?style=social)](https://github.com/@coffeeandfun/google-profanity-words)
+
+
+---
+
+## 🚀 What’s This?
+
+**Google Profanity Words** is a Node.js library that helps you detect and filter out naughty language (in multiple languages!) from your apps or content. Whether you’re building a chat app, a comment section, or a game—this one’s your profanity-slaying sidekick.
+
+Made by devs for devs. Maintained by Robert at Coffee & Fun ☕❤️
+
+---
+
+## ✨ Features
+
+- 🌐 **Multilingual support** – English and Spanish out of the box. More coming soon!
+- 🔁 **Monthly updates** – Stay fresh with the latest no-no words
+- 💡 **Easy to use API** – Straightforward methods, async/await friendly
+- 🔬 **Tested with Jest** – Fully covered and ready for production
+- ⚡ **Tiny & Fast** – Minimal deps = speedy installs and performance
+
+---
+
+## 📦 Install Me
 
 ```bash
 npm install @coffeeandfun/google-profanity-words
 ```
 
-## Usage
+---
 
-To use the `@coffeeandfun/google-profanity-words`, first, import the module and create an instance:
+## ⚡ Quickstart Guide
 
 ```javascript
 import { ProfanityEngine } from '@coffeeandfun/google-profanity-words';
 
-// Pass the 'language' parameter to specify the language (optional).
-// Defaults to 'en' if no valid language code is provided.
-const profanity = new ProfanityEngine({ language: 'es' });
+// Default is English
+const profanity = new ProfanityEngine();
+
+// Español? You got it.
+const profanityES = new ProfanityEngine({ language: 'es' });
+
+// Check a single word
+const isBad = await profanity.search('example');
+
+// Or check a full sentence
+const hasCurses = await profanity.hasCurseWords('This is a test sentence');
+
+console.log(isBad, hasCurses); // true / false
 ```
 
-The language parameter is optional and can be used to specify the language for the profanity list. It defaults to 'en' if no valid language code is provided. If the specified language file is not found, it will fall back to the 'en' language file and display a console warning.
+---
 
-## API Functions
+## 🔍 API Docs (But Make It Chill)
 
-### 1. `all()`
+### 🛠️ `new ProfanityEngine(options?)`
 
-Retrieves all the profanity words as an array.
+Create a new profanity detector engine!
 
 ```javascript
-const allWords = await profanity.all();
+const profanity = new ProfanityEngine(); // Defaults to English
 ```
 
-### 2. `search(word)`
-
-Checks if a given word is considered profane.
+Or choose a specific language:
 
 ```javascript
-const searchWord = await profanity.search('shit');
-// Returns true if the word is profane, otherwise false.
+const spanishProfanity = new ProfanityEngine({ language: 'es' });
 ```
 
-### 3. hasCurseWords(sentence)
+#### Options:
+- `language` (string, optional):  
+  - `'en'` = English (default)  
+  - `'es'` = Spanish  
+  - If a language isn’t available, it falls back to English.
 
-Checks if a given sentence contains any profanity words.
+---
+
+### 🔎 `search(word)`
+
+Check a single word to see if it's naughty.
 
 ```javascript
-const sentence = 'Do not use bad words like mierda or idiota.';
-const hasCurseWords = await profanity.hasCurseWords(sentence);
-// Returns true if the sentence contains profanity words, otherwise false.
+const isProfane = await profanity.search('heck');
+console.log(isProfane); // true or false
 ```
 
-### 4. Handling Empty Strings
+---
 
-The `search` and `hasCurseWords` functions will return false for any empty string.
+### 💬 `hasCurseWords(sentence)`
+
+Check a full sentence or phrase for profanity.
 
 ```javascript
-const searchWord = await profanity.search('');
-const hasCurseWords = await profanity.hasCurseWords('');
-// Returns false for an empty string.
+const result = await profanity.hasCurseWords('You silly goose');
+console.log(result); // probably false, unless goose is banned now 🪿
 ```
 
-## Testing
+---
 
-The `@coffeeandfun/google-profanity-words` comes with a test suite using the Jest framework. To run the tests, use the following command:
+### 📜 `all()`
+
+Get the full list of bad words in the current language.
+
+```javascript
+const badWords = await profanity.all();
+console.log(badWords); // ['word1', 'word2', 'etc']
+```
+
+---
+
+### 💡 Real Talk: Edge Cases
+
+- Empty strings? We gotchu. Returns `false`.
+- `search()` and `hasCurseWords()` are **case-insensitive**.
+- Special characters and punctuation? No problem.
+
+---
+
+## 🧪 Testing with Jest
+
+We've got testing covered like whipped cream on a latte ☕🎂
+
+Run the default test suite:
 
 ```bash
 npm test
 ```
 
-## Contributing
+Or use more specific Jest commands:
 
-Contributions to this module are welcome! If you find any issues or have suggestions for improvements, feel free to open an issue or create a pull request on the GitHub repository.
+```bash
+# Watch mode (great for dev workflow)
+npx jest --watch
 
-## License
+# Run tests in a specific file
+npx jest path/to/your/file.test.js
 
-This project is licensed under the MIT License.
+# Run coverage report
+npx jest --coverage
 
-## Acknowledgments
+# Run with verbose output (get all the juicy details)
+npx jest --verbose
+```
 
-Special thanks to Robert James Gabriel and Coffee & Fun LLC for creating and maintaining this module, as well as the Jest team for the testing framework. Your efforts make this module more reliable and robust.
+Tests are located in the `/__tests__/` directory and use the real profanity files, so you know it’s legit 👀✅
 
 ---
+
+## 🔀 Example Use Cases
+
+### ✅ Filter User Input
+
+```js
+async function filterInput(input) {
+  if (await profanity.hasCurseWords(input)) {
+    return '⚠️ Whoa there! Language, please.';
+  }
+  return input;
+}
+```
+
+---
+
+### 🌍 Multi-language Setup
+
+```js
+const en = new ProfanityEngine({ language: 'en' });
+const es = new ProfanityEngine({ language: 'es' });
+
+const englishResult = await en.search('bad');
+const spanishResult = await es.search('malo');
+```
+
+---
+
+## 🌍 Want to Contribute?
+
+We love open source buddies 💛
+
+### Add a New Language
+
+1. Fork it 🍴
+2. Add a file to `/data/` named like `fr.txt` for French
+3. Fill it with one profane word per line
+4. Push & open a pull request!
+
+---
+
+## 🙌 Who Made This?
+
+Built by [Robert James Gabriel](https://github.com/robertgabriel) and the good people at **Coffee & Fun LLC**. We make dev tools with accessibility, coffee, and good vibes in mind.
+
+> Wanna support? Send a coffee our way or just spread the word! ☕🚀
+
+---
+
+## 🧡 License
+
+[MIT](https://opensource.org/licenses/MIT) – because sharing is caring.
+
+---
+
+## 💬 Support & Community
+
+- 🐛 [Report Bugs](https://github.com/coffeeandfun/google-profanity-words/issues)
+- 💡 [Join Discussions](https://github.com/coffeeandfun/google-profanity-words/discussions)
+- 📬 Email: [support@coffeeandfun.com](mailto:hellow@coffeeandfun.com)
+
+---
+
+Made with ☕, code, and a sprinkle of magic at Coffee & Fun LLC 💖
+
+## AI Usage
+Calude AI was used to help with this read me & adding extra Jest tests. 
