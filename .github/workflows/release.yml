@@ -1,0 +1,137 @@
+name: Release
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Tag to republish (e.g. v3.1.5). Leave blank to no-op.'
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+    permissions:
+      contents: write
+      pull-requests: write
+    outputs:
+      release_created: ${{ steps.release.outputs.release_created }}
+      tag_name: ${{ steps.release.outputs.tag_name }}
+    steps:
+      - name: Run Release Please
+        id: release
+        uses: googleapis/release-please-action@v4
+        with:
+          config-file: .github/release-please-config.json
+          manifest-file: .github/.release-please-manifest.json
+
+  test:
+    needs: release-please
+    if: |
+      always() &&
+      (needs.release-please.outputs.release_created == 'true' ||
+       github.event_name == 'workflow_dispatch')
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        node-version: [16, 18, 20, 22]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.version || needs.release-please.outputs.tag_name }}
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm test
+
+  verify-version:
+    needs: [release-please, test]
+    if: |
+      always() && needs.test.result == 'success' &&
+      (needs.release-please.outputs.release_created == 'true' ||
+       github.event_name == 'workflow_dispatch')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Resolve tag
+        id: tag
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "name=${{ inputs.version }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "name=${{ needs.release-please.outputs.tag_name }}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Checkout tag
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.tag.outputs.name }}
+
+      - name: Compare package.json version to tag
+        env:
+          TAG_NAME: ${{ steps.tag.outputs.name }}
+        run: |
+          TAG_VERSION="${TAG_NAME##*v}"
+          PKG_VERSION=$(node -p "require('./package.json').version")
+          echo "Tag:     $TAG_VERSION"
+          echo "package: $PKG_VERSION"
+          if [ "$TAG_VERSION" != "$PKG_VERSION" ]; then
+            echo "::error::Tag $TAG_NAME does not match package.json version $PKG_VERSION"
+            exit 1
+          fi
+
+  publish-npm:
+    needs: [release-please, test, verify-version]
+    if: |
+      always() && needs.verify-version.result == 'success' &&
+      (needs.release-please.outputs.release_created == 'true' ||
+       github.event_name == 'workflow_dispatch')
+    runs-on: ubuntu-latest
+    environment: npm-publish
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Resolve tag
+        id: tag
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "name=${{ inputs.version }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "name=${{ needs.release-please.outputs.tag_name }}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Checkout tag
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.tag.outputs.name }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org/
+
+      - name: Upgrade npm to latest
+        run: npm install -g npm@latest
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Publish to npm with provenance
+        run: npm publish --provenance --access public

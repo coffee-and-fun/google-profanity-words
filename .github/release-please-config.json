@@ -1,0 +1,16 @@
+{
+  "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+  "release-type": "node",
+  "include-v-in-tag": true,
+  "include-component-in-tag": false,
+  "packages": {
+    ".": {
+      "release-type": "node",
+      "component": "",
+      "include-v-in-tag": true,
+      "include-component-in-tag": false,
+      "changelog-path": "CHANGELOG.md",
+      "package-name": "@coffeeandfun/google-profanity-words"
+    }
+  }
+}

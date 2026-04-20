@@ -3,7 +3,28 @@
   "version": "3.0.0",
   "description": "Real profanity words banned by Google, extracted from their hidden API before shutdown. Now available as an easy-to-use Node.js library for content filtering.",
   "main": "index.js",
+  "types": "index.d.ts",
   "type": "module",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "import": "./index.js",
+      "default": "./index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "index.js",
+    "index.d.ts",
+    "src/",
+    "data/",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
+  ],
+  "engines": {
+    "node": ">=16"
+  },
   "scripts": {
     "format": "npx prettier . --write",
     "test": "NODE_OPTIONS=--experimental-vm-modules NODE_NO_WARNINGS=1 jest",
@@ -23,13 +44,13 @@
     "profanityfilter"
   ],
   "author": "Robert James Gabriel",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/coffee-and-fun/google-profanity-words/issues"
   },
   "homepage": "https://github.com/coffee-and-fun/google-profanity-words#readme",
   "devDependencies": {
-    "jest": "^27.4.5",
+    "jest": "^30.3.0",
     "prettier": "3.0.0"
   }
 }

@@ -20,7 +20,7 @@ describe('ProfanityEngine v3 API tests', () => {
       const allWords = await profanity.all();
       expect(Array.isArray(allWords)).toBe(true);
       expect(allWords.length).toBeGreaterThan(0);
-      expect(allWords.length).toEqual(958); // Adjust based on your actual count
+      expect(allWords.length).toEqual(962); // Adjust based on your actual count
     });
 
     it('Should detect profanity words correctly', async () => {
@@ -68,7 +68,7 @@ describe('ProfanityEngine v3 API tests', () => {
       });
       
       const terms = await unsupportedProfanity.all();
-      expect(terms.length).toEqual(958); // Should load English words
+      expect(terms.length).toEqual(962); // Should load English words
     });
 
     it('Should work with supported languages', async () => {

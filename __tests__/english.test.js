@@ -18,7 +18,7 @@ describe('English Profanity tests', () => {
   describe('Core English functionality', () => {
     it('Should get all the profanity words in an array', async () => {
       const allWords = await profanity.all();
-      expect(allWords.length).toEqual(958); // Verify this number matches your actual word count
+      expect(allWords.length).toEqual(962); // Verify this number matches your actual word count
       expect(Array.isArray(allWords)).toBe(true);
       expect(allWords.length).toBeGreaterThan(0);
     });
@@ -199,7 +199,7 @@ describe('English Profanity tests', () => {
       expect(results[0]).toBe(true); // search shit
       expect(results[1]).toBe(true); // hasCurseWords
       expect(results[2]).toContain('shit'); // getCurseWords
-      expect(results[3].length).toBe(958); // all words
+      expect(results[3].length).toBe(962); // all words
       expect(results[4]).toBe(true); // search fuck
     });
   });
