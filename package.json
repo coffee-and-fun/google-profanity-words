@@ -1,6 +1,6 @@
 {
   "name": "@coffeeandfun/google-profanity-words",
-  "version": "3.0.2",
+  "version": "3.0.3",
   "description": "Real profanity words banned by Google, extracted from their hidden API before shutdown. Now available as an easy-to-use Node.js library for content filtering.",
   "main": "index.js",
   "types": "index.d.ts",
@@ -13,7 +13,6 @@
     },
     "./package.json": "./package.json"
   },
-  
   "files": [
     "index.js",
     "index.d.ts",
