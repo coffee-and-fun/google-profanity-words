@@ -138,6 +138,22 @@ describe('ProfanityEngine v3 API tests', () => {
       expect(await profanity.search('\thell\n')).toBe(true);
     });
 
+    it('Should give consistent results regardless of trailing whitespace (regression: issue #29)', async () => {
+      const cleanSentence =
+        'I remember seeing this small salt water aquarium at a museum, filled with anemones, and it was like a living work of art. I probably spent hours staring at it.';
+
+      expect(await profanity.hasCurseWords(cleanSentence)).toBe(false);
+      expect(await profanity.hasCurseWords(cleanSentence + ' ')).toBe(false);
+      expect(await profanity.hasCurseWords(cleanSentence + '   ')).toBe(false);
+      expect(await profanity.hasCurseWords(' ' + cleanSentence + ' ')).toBe(false);
+      expect(await profanity.hasCurseWords('\t' + cleanSentence + '\n')).toBe(false);
+
+      const dirtySentence = 'oh hell no.';
+      expect(await profanity.hasCurseWords(dirtySentence)).toBe(true);
+      expect(await profanity.hasCurseWords(dirtySentence + ' ')).toBe(true);
+      expect(await profanity.hasCurseWords(dirtySentence + '   ')).toBe(true);
+    });
+
     it('Should handle various punctuation marks', async () => {
       const testSentences = [
         'What the hell?',
