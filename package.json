@@ -13,6 +13,7 @@
     },
     "./package.json": "./package.json"
   },
+  
   "files": [
     "index.js",
     "index.d.ts",
