@@ -8,6 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 Future releases are managed by [Release Please](https://github.com/googleapis/release-please)
 — entries are generated automatically from commit messages.
 
+## [3.0.2](https://github.com/coffee-and-fun/google-profanity-words/compare/v3.0.1...v3.0.2) (2026-04-20)
+
+
+### Bug Fixes
+
+* updated release code ([0a5f08d](https://github.com/coffee-and-fun/google-profanity-words/commit/0a5f08d25f63d21ef493bf359c3c49d074151d43))
+
 ## [3.0.1](https://github.com/coffee-and-fun/google-profanity-words/compare/3.0.0...v3.0.1) (2026-04-20)
 
 
