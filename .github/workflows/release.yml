@@ -127,6 +127,9 @@ jobs:
           node-version: 22
           registry-url: https://registry.npmjs.org/
 
+      - name: Upgrade npm to >=11.5 (Trusted Publishing requires this)
+        run: npm install -g npm@latest --force --no-audit --no-fund
+
       - name: Print npm version
         run: npm --version
 
