@@ -1,348 +1,376 @@
-import { ProfanityEngine } from '../index.js';
+const PII_PATTERNS = {
+  email: {
+    pattern: /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/g,
+    replacement: '[email removed]',
+    description: 'Email addresses'
+  },
+  phone: {
+    pattern: /(?:\+?1[-.\s]?)?\(?([0-9]{3})\)?[-.\s]?([0-9]{3})[-.\s]?([0-9]{4})(?:\s?(?:ext|x|extension)\.?\s?(\d+))?/g,
+    replacement: '[phone removed]',
+    description: 'Phone numbers'
+  },
+  ssn: {
+    pattern: /\b(?!000|666|9\d{2})\d{3}-?(?!00)\d{2}-?(?!0000)\d{4}\b/g,
+    replacement: '[SSN removed]',
+    description: 'Social Security Numbers'
+  },
+  creditCard: {
+    pattern: /\b\d{4}[\s-]?\d{4}[\s-]?\d{4}[\s-]?\d{4}\b/g,
+    replacement: '[credit card removed]',
+    description: 'Credit card numbers'
+  },
+  ipAddress: {
+    pattern: /\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b/g,
+    replacement: '[IP address removed]',
+    description: 'IP addresses'
+  },
+  address: {
+    pattern: /\b\d+\s+[A-Za-z0-9\s,.-]+(?:Street|St|Avenue|Ave|Road|Rd|Boulevard|Blvd|Lane|Ln|Drive|Dr|Court|Ct|Circle|Cir|Way|Place|Pl|Parkway|Pkwy|Terrace|Ter)\b/gi,
+    replacement: '[address removed]',
+    description: 'Street addresses'
+  },
+  passport: {
+    pattern: /\b[A-Z]{2}[0-9]{7}\b/g,
+    replacement: '[passport number removed]',
+    description: 'Passport numbers'
+  },
+  driversLicense: {
+    pattern: /\b[A-Z]{1,2}[0-9]{6,9}\b/g,
+    replacement: '[driver\'s license removed]',
+    description: 'Driver\'s license numbers'
+  },
+  zipCode: {
+    pattern: /(?<!\d-)\b\d{5}(?:-\d{4})?\b(?!-\d)/g,
+    replacement: '[zip code removed]',
+    description: 'ZIP codes'
+  },
+  bankAccount: {
+    pattern: /\b\d{8,17}\b/g,
+    replacement: '[bank account removed]',
+    description: 'Bank account numbers'
+  },
+  url: {
+    pattern: /https?:\/\/(?:[-\w.])+(?:\:[0-9]+)?(?:\/(?:[\w\/_.])*(?:\?(?:[\w&=%.])*)?(?:\#(?:[\w.])*)?)?/g,
+    replacement: '[URL removed]',
+    description: 'URLs'
+  },
+  dateOfBirth: {
+    pattern: /\b(?:0[1-9]|1[0-2])[-\/](?:0[1-9]|[12][0-9]|3[01])[-\/](?:19|20)\d{2}\b/g,
+    replacement: '[date removed]',
+    description: 'Dates of birth'
+  }
+};
 
-const language = process.env.LANGUAGE || 'en'; // Default to 'en' if the LANGUAGE environment variable is not set
-let profanity;
+const DEFAULT_CONFIG = {
+  email: { remove: true, replacement: '[email removed]' },
+  phone: { remove: true, replacement: '[phone removed]' },
+  ssn: { remove: true, replacement: '[SSN removed]' },
+  creditCard: { remove: true, replacement: '[credit card removed]' },
+  ipAddress: { remove: true, replacement: '[IP address removed]' },
+  address: { remove: true, replacement: '[address removed]' },
+  passport: { remove: true, replacement: '[passport number removed]' },
+  driversLicense: { remove: true, replacement: '[driver\'s license removed]' },
+  zipCode: { remove: true, replacement: '[zip code removed]' },
+  bankAccount: { remove: true, replacement: '[bank account removed]' },
+  url: { remove: false, replacement: '[URL removed]' },
+  dateOfBirth: { remove: true, replacement: '[date removed]' }
+};
 
-describe('Arabic Profanity tests', () => {
-  beforeAll(async () => {
-    profanity = new ProfanityEngine({
-      language: 'ar',
-      testMode: true,
-    });
-  });
+function validateInput(text) {
+  if (text === null || text === undefined) {
+    throw new TypeError('Input cannot be null or undefined');
+  }
+  if (typeof text !== 'string') {
+    throw new TypeError('Input must be a string');
+  }
+  return text;
+}
 
-  afterEach(() => {
-    profanity.reset();
-  });
+function mergeConfig(userOptions = {}) {
+  const config = {};
+  
+  for (const [key, value] of Object.entries(DEFAULT_CONFIG)) {
+    config[key] = { ...value };
+  }
+  
+  for (const [key, value] of Object.entries(userOptions)) {
+    if (config[key]) {
+      config[key] = { ...config[key], ...value };
+    } else {
+      config[key] = value;
+    }
+  }
+  
+  return config;
+}
 
-  describe('Core Arabic functionality', () => {
-    it('Should get all the profanity words in an array', async () => {
-      const allWords = await profanity.all();
-      expect(Array.isArray(allWords)).toBe(true);
-      expect(allWords.length).toBeGreaterThan(0);
-      // Update this number based on your actual Arabic word count
-      // expect(allWords.length).toEqual(XXX);
-    });
+function removePII(text, options = {}) {
+  validateInput(text);
+  
+  const config = mergeConfig(options);
+  let cleanedText = text;
+  
+  for (const [type, settings] of Object.entries(config)) {
+    if (!settings.remove) continue;
+    
+    const patternInfo = PII_PATTERNS[type];
+    const pattern = patternInfo?.pattern || settings.pattern;
+    const replacement = settings.replacement || patternInfo?.replacement || '[PII removed]';
+    
+    if (pattern) {
+      cleanedText = cleanedText.replace(pattern, replacement);
+    }
+  }
+  
+  return cleanedText;
+}
 
-    it('Should return true for Arabic profanity words', async () => {
-      // Test with a common Arabic profanity word (if it exists in your list)
-      // Replace 'testword' with an actual word from your Arabic list
-      const searchWord = await profanity.search('testword');
-      expect(typeof searchWord).toBe('boolean');
-    });
-
-    it('Should return false for normal Arabic words', async () => {
-      const normalWords = [
-        'مرحبا', // Hello
-        'شكرا',  // Thank you
-        'بيت',   // House
-        'كتاب',  // Book
-        'ماء',   // Water
-      ];
-
-      for (const word of normalWords) {
-        expect(await profanity.search(word)).toBe(false);
+function removePIIDetailed(text, options = {}) {
+  validateInput(text);
+  
+  const config = mergeConfig(options);
+  let cleanedText = text;
+  const removedItems = [];
+  
+  for (const [type, settings] of Object.entries(config)) {
+    if (!settings.remove) continue;
+    
+    const patternInfo = PII_PATTERNS[type];
+    const pattern = patternInfo?.pattern || settings.pattern;
+    const replacement = settings.replacement || patternInfo?.replacement || '[PII removed]';
+    
+    if (pattern) {
+      const matches = cleanedText.match(pattern);
+      if (matches) {
+        removedItems.push({
+          type,
+          count: matches.length,
+          items: matches.slice(),
+          description: patternInfo?.description || `${type} data`
+        });
+        cleanedText = cleanedText.replace(pattern, replacement);
       }
-    });
+    }
+  }
+  
+  return {
+    cleanedText,
+    removedItems,
+    originalLength: text.length,
+    cleanedLength: cleanedText.length,
+    reductionPercentage: Math.round(((text.length - cleanedText.length) / text.length) * 100)
+  };
+}
 
-    it('Should return false for any empty string', async () => {
-      const searchWord = await profanity.search('');
-      expect(searchWord).toEqual(false);
-    });
-
-    it('Should return true for a sentence containing a profanity word', async () => {
-      // Replace with actual Arabic sentence containing profanity from your list
-      const sentence = 'هذه جملة تحتوي على كلمة سيئة.'; // "This sentence contains a bad word"
-      const hasCurseWords = await profanity.hasCurseWords(sentence);
-      expect(typeof hasCurseWords).toBe('boolean');
-    });
-
-    it('Should return false for a sentence with no profanity word', async () => {
-      const sentence = 'هذه جملة نظيفة ومهذبة.'; // "This is a clean and polite sentence"
-      const hasCurseWords = await profanity.hasCurseWords(sentence);
-      expect(hasCurseWords).toEqual(false);
-    });
-  });
-
-  describe('Arabic-specific edge cases', () => {
-    it('Should handle Arabic diacritical marks (tashkeel)', async () => {
-      // Test words with and without diacritical marks
-      const testCases = [
-        'كِتَابٌ', // Book with diacritics
-        'كتاب',   // Book without diacritics
-        'مَرْحَبًا', // Hello with diacritics
-        'مرحبا',    // Hello without diacritics
-      ];
-
-      for (const word of testCases) {
-        const result = await profanity.search(word);
-        expect(typeof result).toBe('boolean');
-      }
-    });
-
-    it('Should handle different Arabic letter forms', async () => {
-      // Test initial, medial, final, and isolated forms
-      const testCases = [
-        'بيت',     // Isolated forms
-        'البيت',   // With definite article
-        'بيوت',    // Plural form
-      ];
-
-      for (const word of testCases) {
-        const result = await profanity.search(word);
-        expect(typeof result).toBe('boolean');
-      }
-    });
-
-    it('Should handle Arabic numbers mixed with text', async () => {
-      const sentence = 'هذا النص يحتوي على رقم ١٢٣ وكلمات عربية.'; // "This text contains number 123 and Arabic words"
-      const result = await profanity.hasCurseWords(sentence);
-      expect(typeof result).toBe('boolean');
-    });
-
-    it('Should handle mixed Arabic and English text', async () => {
-      const mixedSentence = 'This is mixed النص العربي and English text.';
-      const result = await profanity.hasCurseWords(mixedSentence);
-      expect(typeof result).toBe('boolean');
-    });
-
-    it('Should handle right-to-left text direction', async () => {
-      // Arabic is read right-to-left
-      const rtlSentence = 'النص العربي يُقرأ من اليمين إلى اليسار.'; // "Arabic text is read from right to left"
-      const result = await profanity.hasCurseWords(rtlSentence);
-      expect(result).toBe(false); // Should be clean text
-    });
-
-    it('Should handle Arabic punctuation correctly', async () => {
-      const testSentences = [
-        'ما هذا؟',          // What is this?
-        'لا، هذا خطأ!',     // No, this is wrong!
-        'قال: "مرحبا"',     // He said: "Hello"
-        'النص؛ والكتابة.',   // Text; and writing.
-      ];
-
-      for (const sentence of testSentences) {
-        const result = await profanity.hasCurseWords(sentence);
-        expect(typeof result).toBe('boolean');
-      }
-    });
-
-    it('Should handle Arabic definite article (ال)', async () => {
-      const testCases = [
-        'بيت',    // House
-        'البيت',  // The house
-        'كتاب',   // Book  
-        'الكتاب', // The book
-      ];
-
-      for (const word of testCases) {
-        const result = await profanity.search(word);
-        expect(typeof result).toBe('boolean');
-      }
-    });
-
-    it('Should handle case sensitivity (Arabic has no case)', async () => {
-      // Arabic doesn't have upper/lower case like Latin scripts
-      const arabicWord = 'مرحبا';
-      const result1 = await profanity.search(arabicWord);
-      const result2 = await profanity.search(arabicWord);
-      expect(result1).toEqual(result2);
-    });
-
-    it('Should handle whitespace around Arabic words', async () => {
-      const arabicWord = 'مرحبا';
-      expect(await profanity.search(`  ${arabicWord}  `)).toBe(false);
-      expect(await profanity.search(`\t${arabicWord}\n`)).toBe(false);
-    });
-
-    it('Should handle Arabic word variations and roots', async () => {
-      // Arabic words are based on root patterns
-      const rootVariations = [
-        'كتب',    // Root k-t-b (to write)
-        'كاتب',   // Writer
-        'مكتوب',  // Written
-        'كتابة',  // Writing
-      ];
-
-      for (const word of rootVariations) {
-        const result = await profanity.search(word);
-        expect(typeof result).toBe('boolean');
-      }
-    });
-
-    it('Should return unique words only in Arabic text', async () => {
-      // Test with repeated Arabic words
-      const sentence = 'مرحبا مرحبا مرحبا في كل مكان';
-      const foundWords = await profanity.getCurseWords(sentence);
+function detectPII(text, options = {}) {
+  validateInput(text);
+  
+  const config = mergeConfig(options);
+  const detectedItems = [];
+  
+  for (const [type, settings] of Object.entries(config)) {
+    const patternInfo = PII_PATTERNS[type];
+    const pattern = patternInfo?.pattern || settings.pattern;
+    
+    if (pattern) {
+      const matches = [];
+      const positions = [];
+      let match;
       
-      // Should return unique words only
-      expect(Array.isArray(foundWords)).toBe(true);
-      // If 'مرحبا' were a profanity word, it should appear only once
-    });
-  });
-
-  describe('Performance tests for Arabic dataset', () => {
-    it('Should handle large Arabic text efficiently', async () => {
-      const largeText = 'هذه جملة تجريبية. '.repeat(1000) + 'النص العربي ' + 'نص نظيف. '.repeat(1000);
+      const regex = new RegExp(pattern.source, pattern.flags);
       
-      const startTime = Date.now();
-      const result = await profanity.hasCurseWords(largeText);
-      const endTime = Date.now();
-      
-      expect(typeof result).toBe('boolean');
-      expect(endTime - startTime).toBeLessThan(100); // Should complete in under 100ms
-    });
-
-    it('Should efficiently search through all Arabic terms', async () => {
-      const allWords = await profanity.all();
-      
-      if (allWords.length > 0) {
-        const startTime = Date.now();
-        for (let i = 0; i < Math.min(100, allWords.length); i++) {
-          await profanity.search(allWords[i % allWords.length]);
-        }
-        const endTime = Date.now();
+      while ((match = regex.exec(text)) !== null) {
+        matches.push(match[0]);
+        positions.push({
+          start: match.index,
+          end: match.index + match[0].length,
+          value: match[0]
+        });
         
-        expect(endTime - startTime).toBeLessThan(50); // Should be very fast with Set lookup
-      }
-    });
-
-    it('Should handle concurrent operations on Arabic dataset', async () => {
-      const promises = [
-        profanity.search('مرحبا'),
-        profanity.hasCurseWords('هذا نص عربي'),
-        profanity.getCurseWords('النص العربي'),
-        profanity.all(),
-        profanity.search('شكرا')
-      ];
-      
-      const results = await Promise.all(promises);
-      expect(results[0]).toBe(false); // search مرحبا (should be clean)
-      expect(results[1]).toBe(false); // hasCurseWords (should be clean)
-      expect(Array.isArray(results[2])).toBe(true); // getCurseWords
-      expect(Array.isArray(results[3])).toBe(true); // all words
-      expect(results[4]).toBe(false); // search شكرا (should be clean)
-    });
-  });
-
-  describe('Arabic language specificity', () => {
-    it('Should load Arabic words correctly or fallback to English', async () => {
-      const allWords = await profanity.all();
-      expect(allWords.length).toBeGreaterThan(0);
-      // If Arabic file doesn't exist, should fallback to English (958 words)
-      // If Arabic file exists, should load Arabic words
-    });
-
-    it('Should handle Arabic-specific character encoding (UTF-8)', async () => {
-      const arabicChars = [
-        'ا', 'ب', 'ت', 'ث', 'ج', 'ح', 'خ', 'د', 'ذ', 'ر',
-        'ز', 'س', 'ش', 'ص', 'ض', 'ط', 'ظ', 'ع', 'غ', 'ف',
-        'ق', 'ك', 'ل', 'م', 'ن', 'ه', 'و', 'ي'
-      ];
-
-      for (const char of arabicChars) {
-        const result = await profanity.search(char);
-        expect(typeof result).toBe('boolean');
-      }
-    });
-
-    it('Should handle Arabic ligatures and special characters', async () => {
-      const specialChars = [
-        'لا',   // Lam-Alif ligature
-        'ﷲ',    // Allah ligature
-        'ة',    // Taa marbuta
-        'ى',    // Alif maksura
-        'ء',    // Hamza
-      ];
-
-      for (const char of specialChars) {
-        const result = await profanity.search(char);
-        expect(typeof result).toBe('boolean');
-      }
-    });
-
-    it('Should handle different Arabic dialects considerations', async () => {
-      // Note: This depends on what's in your Arabic word list
-      const dialectWords = [
-        'شنو',   // What (Iraqi/Gulf)
-        'ايش',   // What (Levantine) 
-        'ايه',   // What (Egyptian)
-        'اشنو',  // What (Moroccan)
-      ];
-
-      for (const word of dialectWords) {
-        const result = await profanity.search(word);
-        expect(typeof result).toBe('boolean');
-      }
-    });
-  });
-
-  describe('Data integrity for Arabic', () => {
-    it('Should not allow modification of Arabic word list', async () => {
-      const terms1 = await profanity.all();
-      const originalLength = terms1.length;
-      
-      // Try to modify the returned array
-      terms1.push('كلمة-مزيفة');
-      terms1.pop();
-      if (terms1.length > 0) {
-        terms1[0] = 'معدل';
+        if (!pattern.global) break;
       }
       
-      // Get terms again - should be unchanged
-      const terms2 = await profanity.all();
-      expect(terms2.length).toBe(originalLength);
-      expect(terms2).not.toContain('كلمة-مزيفة');
-      if (terms2.length > 0) {
-        expect(terms2[0]).not.toBe('معدل');
+      if (matches.length > 0) {
+        detectedItems.push({
+          type,
+          count: matches.length,
+          items: matches,
+          positions,
+          description: patternInfo?.description || `${type} data`
+        });
       }
-    });
+    }
+  }
+  
+  return {
+    text,
+    detectedItems,
+    hasPII: detectedItems.length > 0,
+    totalMatches: detectedItems.reduce((sum, item) => sum + item.count, 0),
+    types: detectedItems.map(item => item.type)
+  };
+}
 
-    it('Should provide consistent results for Arabic detection', async () => {
-      const sentence = 'هذه جملة تجريبية بالعربية';
-      
-      const result1 = await profanity.getCurseWords(sentence);
-      const result2 = await profanity.getCurseWords(sentence);
-      const result3 = await profanity.hasCurseWords(sentence);
-      
-      expect(result1).toEqual(result2);
-      expect(typeof result3).toBe('boolean');
-    });
-  });
+function analyzePII(text, options = {}) {
+  const detection = detectPII(text, options);
+  const removal = removePIIDetailed(text, options);
+  
+  return {
+    original: {
+      text,
+      length: text.length,
+      wordCount: text.split(/\s+/).filter(word => word.length > 0).length
+    },
+    cleaned: {
+      text: removal.cleanedText,
+      length: removal.cleanedLength,
+      wordCount: removal.cleanedText.split(/\s+/).filter(word => word.length > 0).length
+    },
+    pii: {
+      detected: detection.detectedItems,
+      removed: removal.removedItems,
+      totalCount: detection.totalMatches,
+      types: detection.types,
+      reductionPercentage: removal.reductionPercentage
+    },
+    risk: {
+      level: getRiskLevel(detection.totalMatches),
+      score: calculateRiskScore(detection.detectedItems)
+    }
+  };
+}
 
-  describe('Configuration and fallback for Arabic', () => {
-    it('Should handle missing Arabic language file gracefully', async () => {
-      // If ar.txt doesn't exist, should fallback to English
-      const arabicProfanity = new ProfanityEngine({
-        language: 'ar',
-        testMode: true,
-      });
-      
-      const terms = await arabicProfanity.all();
-      expect(terms.length).toBeGreaterThan(0);
-    });
+function validatePIICompliance(text, options = {}) {
+  const detection = detectPII(text, options);
+  
+  return {
+    isCompliant: !detection.hasPII,
+    violations: detection.detectedItems,
+    violationCount: detection.totalMatches,
+    riskLevel: getRiskLevel(detection.totalMatches),
+    riskScore: calculateRiskScore(detection.detectedItems),
+    recommendations: getRecommendations(detection.detectedItems)
+  };
+}
 
-    it('Should suppress warnings in test mode for Arabic', async () => {
-      // Store original console.warn
-      const originalWarn = console.warn;
-      let warnCalled = false;
-      
-      // Mock console.warn
-      console.warn = () => {
-        warnCalled = true;
+function processBatch(texts, options = {}) {
+  if (!Array.isArray(texts)) {
+    throw new TypeError('Input must be an array of strings');
+  }
+  
+  return texts.map((text, index) => {
+    try {
+      const result = removePIIDetailed(text, options);
+      return {
+        index,
+        success: true,
+        ...result
       };
-      
-      const arabicProfanity = new ProfanityEngine({
-        language: 'ar',
-        testMode: true,
-      });
-      
-      warnCalled = false;
-      await arabicProfanity.all();
-      expect(warnCalled).toBe(false);
-      
-      // Restore original console.warn
-      console.warn = originalWarn;
-    });
+    } catch (error) {
+      return {
+        index,
+        success: false,
+        error: error.message,
+        originalText: text
+      };
+    }
   });
-});
+}
+
+function getRiskLevel(piiCount) {
+  if (piiCount === 0) return 'none';
+  if (piiCount <= 2) return 'low';
+  if (piiCount <= 5) return 'medium';
+  if (piiCount <= 10) return 'high';
+  return 'critical';
+}
+
+function calculateRiskScore(detectedItems) {
+  const riskWeights = {
+    ssn: 10,
+    creditCard: 9,
+    passport: 8,
+    driversLicense: 7,
+    bankAccount: 8,
+    email: 3,
+    phone: 4,
+    address: 5,
+    ipAddress: 2,
+    zipCode: 2,
+    url: 1,
+    dateOfBirth: 6
+  };
+  
+  return detectedItems.reduce((score, item) => {
+    const weight = riskWeights[item.type] || 1;
+    return score + (item.count * weight);
+  }, 0);
+}
+
+function getRecommendations(detectedItems) {
+  const recommendations = [];
+  
+  if (detectedItems.length === 0) {
+    recommendations.push('Text appears to be PII-free');
+    return recommendations;
+  }
+  
+  const types = detectedItems.map(item => item.type);
+  
+  if (types.includes('ssn')) {
+    recommendations.push('⚠️ SSN detected - Consider using last 4 digits only');
+  }
+  
+  if (types.includes('creditCard')) {
+    recommendations.push('⚠️ Credit card detected - Never store full card numbers');
+  }
+  
+  if (types.includes('email')) {
+    recommendations.push('📧 Email detected - Consider using hashed or masked emails');
+  }
+  
+  if (types.includes('phone')) {
+    recommendations.push('📞 Phone number detected - Consider masking middle digits');
+  }
+  
+  if (types.includes('address')) {
+    recommendations.push('🏠 Address detected - Consider using city/state only');
+  }
+  
+  if (detectedItems.length > 5) {
+    recommendations.push('🔥 High PII density - Consider comprehensive data sanitization');
+  }
+  
+  return recommendations;
+}
+
+function getAvailableTypes() {
+  return Object.keys(PII_PATTERNS).map(type => ({
+    type,
+    description: PII_PATTERNS[type].description,
+    defaultReplacement: PII_PATTERNS[type].replacement
+  }));
+}
+
+function createCustomPattern(type, pattern, replacement, description) {
+  return {
+    [type]: {
+      pattern,
+      replacement,
+      description
+    }
+  };
+}
+
+export {
+  removePII,
+  removePIIDetailed,
+  detectPII,
+  analyzePII,
+  validatePIICompliance,
+  processBatch,
+  getAvailableTypes,
+  createCustomPattern
+};
+
+export default removePII;
